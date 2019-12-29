@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import * as si from 'systeminformation';
 
 @Injectable()
-export class NetworkService {
+export class NetworkService implements OnModuleInit {
+	async onModuleInit(): Promise<void> {
+		await si.networkStats();
+	}
+
 	public getNetworkInterfaces(): Promise<
 		si.Systeminformation.NetworkInterfacesData[]
 	> {

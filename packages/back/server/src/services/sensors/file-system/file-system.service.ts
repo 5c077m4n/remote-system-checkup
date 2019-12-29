@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import * as si from 'systeminformation';
 
 @Injectable()
-export class FileSystemService {
+export class FileSystemService implements OnModuleInit {
+	async onModuleInit(): Promise<void> {
+		await Promise.all([si.fsStats(), si.disksIO()]);
+	}
+
 	public getDiskLayout(): Promise<si.Systeminformation.DiskLayoutData[]> {
 		return si.diskLayout();
 	}
