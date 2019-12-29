@@ -24,5 +24,10 @@ module.exports = {
 		indent: ['warn', 'tab'],
 		'no-unused-vars': 'warn',
 		indent: ['warn', 'tab'],
+		'@typescript-eslint/indent': [
+			'warn',
+			4,
+			{ ignoredNodes: ['TSTypeParameterInstantiation'] },
+		],
 	},
 };
