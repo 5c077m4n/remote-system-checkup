@@ -2,6 +2,7 @@
 	"name": "remote-system-checkup",
 	"private": true,
 	"scripts": {
+		"bootstrap": "lerna bootstrap",
 		"start": "lerna run start",
 		"test": "lerna run test",
 		"clean": "lerna run clean"
