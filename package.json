@@ -5,8 +5,10 @@
 		"bootstrap": "lerna bootstrap",
 		"build": "lerna run build",
 		"clean": "lerna run clean",
+		"start:dev": "lerna run start:dev",
 		"start:prod": "lerna run start:prod",
-		"test": "lerna run test"
+		"test": "lerna run test",
+		"test:watch": "lerna run test:watch"
 	},
 	"husky": {
 		"hooks": {
