@@ -3,23 +3,10 @@
 	"private": true,
 	"scripts": {
 		"bootstrap": "lerna bootstrap",
+		"build": "lerna run build",
+		"clean": "lerna run clean",
 		"start": "lerna run start",
-		"test": "lerna run test",
-		"clean": "lerna run clean"
-	},
-	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^2.13.0",
-		"@typescript-eslint/parser": "^2.13.0",
-		"eslint": "^6.8.0",
-		"eslint-config-prettier": "^6.9.0",
-		"eslint-plugin-prettier": "^3.1.2",
-		"husky": "^3.1.0",
-		"lerna": "^3.20.0",
-		"lint-staged": "^9.5.0",
-		"prettier": "^1.19.1",
-		"rimraf": "^3.0.0",
-		"sort-package-json": "^1.32.2",
-		"typescript": "^3.7.4"
+		"test": "lerna run test"
 	},
 	"husky": {
 		"hooks": {
@@ -40,5 +27,19 @@
 			"git add"
 		]
 	},
-	"dependencies": {}
+	"dependencies": {},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^2.13.0",
+		"@typescript-eslint/parser": "^2.13.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.9.0",
+		"eslint-plugin-prettier": "^3.1.2",
+		"husky": "^3.1.0",
+		"lerna": "^3.20.0",
+		"lint-staged": "^9.5.0",
+		"prettier": "^1.19.1",
+		"rimraf": "^3.0.0",
+		"sort-package-json": "^1.32.2",
+		"typescript": "^3.7.4"
+	}
 }
