@@ -4,7 +4,6 @@ services:
         image: node:latest
         volumes:
             - .:/usr/app
-            - /usr/app/node_modules
         command: >
             sh -c "cd /usr/app &&
                 npm install &&
