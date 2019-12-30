@@ -14,16 +14,16 @@
 		}
 	},
 	"lint-staged": {
+		"**/package.json": [
+			"sort-package-json",
+			"git add"
+		],
 		"*.{ts,js,css,json,md}": [
 			"prettier --write",
 			"git add"
 		],
 		"*.{ts,js}": [
 			"eslint --fix",
-			"git add"
-		],
-		"package.json": [
-			"sort-package-json",
 			"git add"
 		]
 	},

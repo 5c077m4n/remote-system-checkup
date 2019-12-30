@@ -1,11 +1,14 @@
-version: '3.7'
+version: "3"
 services:
     back:
         image: node:latest
         volumes:
-            - .:/opt/app
+            - .:/usr/app
+            - /usr/app/node_modules
         command: >
-            sh -c "npm install && npm run bootstrap && npm run build"
+            sh -c "cd /usr/app &&
+                npm install --quiet &&
+                npm run bootstrap && npm run build"
         restart: unless-stopped
     front:
         depends_on:

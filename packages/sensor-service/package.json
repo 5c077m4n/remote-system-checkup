@@ -2,23 +2,37 @@
 	"name": "sensor-service",
 	"version": "0.0.1",
 	"description": "",
-	"author": "",
 	"license": "MIT",
+	"author": "",
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "nest build",
+		"clean": "rimraf ./node_modules",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-		"start": "nest start",
-		"start:dev": "nest start --watch",
-		"start:debug": "nest start --debug --watch",
-		"start:prod": "node dist/main",
 		"lint": "tslint -p tsconfig.json -c tslint.json",
+		"start": "nest start",
+		"start:debug": "nest start --debug --watch",
+		"start:dev": "nest start --watch",
+		"start:prod": "node dist/main",
 		"test": "jest",
-		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./test/jest-e2e.json",
-		"clean": "rimraf ./node_modules"
+		"test:watch": "jest --watch"
+	},
+	"jest": {
+		"coverageDirectory": "../coverage",
+		"moduleFileExtensions": [
+			"js",
+			"json",
+			"ts"
+		],
+		"rootDir": "src",
+		"testEnvironment": "node",
+		"testRegex": ".spec.ts$",
+		"transform": {
+			"^.+\\.(t|j)s$": "ts-jest"
+		}
 	},
 	"dependencies": {
 		"@nestjs/common": "^6.7.2",
@@ -29,7 +43,8 @@
 		"amqplib": "^0.5.5",
 		"reflect-metadata": "^0.1.13",
 		"rimraf": "^3.0.0",
-		"rxjs": "^6.5.3"
+		"rxjs": "^6.5.3",
+		"systeminformation": "^4.16.0"
 	},
 	"devDependencies": {
 		"@nestjs/cli": "^6.9.0",
@@ -48,19 +63,5 @@
 		"tsconfig-paths": "^3.9.0",
 		"tslint": "^5.20.0",
 		"typescript": "^3.6.3"
-	},
-	"jest": {
-		"moduleFileExtensions": [
-			"js",
-			"json",
-			"ts"
-		],
-		"rootDir": "src",
-		"testRegex": ".spec.ts$",
-		"transform": {
-			"^.+\\.(t|j)s$": "ts-jest"
-		},
-		"coverageDirectory": "../coverage",
-		"testEnvironment": "node"
 	}
 }
