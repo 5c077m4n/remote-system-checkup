@@ -7,8 +7,10 @@ services:
             - /usr/app/node_modules
         command: >
             sh -c "cd /usr/app &&
-                npm install --quiet &&
-                npm run bootstrap && npm run build"
+                npm install &&
+                npm run bootstrap &&
+                npm run build &&
+                npm run start:prod"
         restart: unless-stopped
     front:
         depends_on:
