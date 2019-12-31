@@ -1,4 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 
 import * as si from 'systeminformation';
 
@@ -8,22 +9,34 @@ export class FileSystemService implements OnModuleInit {
 		await Promise.all([si.fsStats(), si.disksIO()]);
 	}
 
-	public getDiskLayout(): Promise<si.Systeminformation.DiskLayoutData[]> {
+	@MessagePattern({ cmd: 'diskLayout' })
+	public async getDiskLayout(): Promise<
+		si.Systeminformation.DiskLayoutData[]
+	> {
 		return si.diskLayout();
 	}
-	public getBlockDevices(): Promise<si.Systeminformation.BlockDevicesData[]> {
+	@MessagePattern({ cmd: 'blockDevices' })
+	public async getBlockDevices(): Promise<
+		si.Systeminformation.BlockDevicesData[]
+	> {
 		return si.blockDevices();
 	}
-	public getDisksIO(): Promise<si.Systeminformation.DisksIoData> {
+	@MessagePattern({ cmd: 'diskIO' })
+	public async getDisksIO(): Promise<si.Systeminformation.DisksIoData> {
 		return si.disksIO();
 	}
-	public getFsSize(): Promise<si.Systeminformation.FsSizeData[]> {
+	@MessagePattern({ cmd: 'fsSize' })
+	public async getFsSize(): Promise<si.Systeminformation.FsSizeData[]> {
 		return si.fsSize();
 	}
-	public getFsOpenFiles(): Promise<si.Systeminformation.FsOpenFilesData[]> {
+	@MessagePattern({ cmd: 'fsOpenFiles' })
+	public async getFsOpenFiles(): Promise<
+		si.Systeminformation.FsOpenFilesData[]
+	> {
 		return si.fsOpenFiles();
 	}
-	public getFsStats(): Promise<si.Systeminformation.FsStatsData> {
+	@MessagePattern({ cmd: 'fsStats' })
+	public async getFsStats(): Promise<si.Systeminformation.FsStatsData> {
 		return si.fsStats();
 	}
 }

@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 
 import * as si from 'systeminformation';
 
 @Injectable()
 export class MemoryService {
-	public getMem(): Promise<si.Systeminformation.MemData> {
+	@MessagePattern({ cmd: 'mem' })
+	public async getMem(): Promise<si.Systeminformation.MemData> {
 		return si.mem();
 	}
-	public getMemLayout(): Promise<si.Systeminformation.MemLayoutData[]> {
+	@MessagePattern({ cmd: 'memLayout' })
+	public async getMemLayout(): Promise<si.Systeminformation.MemLayoutData[]> {
 		return si.memLayout();
 	}
 }

@@ -1,22 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 
 import * as si from 'systeminformation';
 
 @Injectable()
 export class OsInfoService {
-	public getOsInfo(): Promise<si.Systeminformation.OsData> {
+	@MessagePattern({ cmd: 'osInfo' })
+	public async getOsInfo(): Promise<si.Systeminformation.OsData> {
 		return si.osInfo();
 	}
-	public getUuid(): Promise<si.Systeminformation.UuidData> {
+	@MessagePattern({ cmd: 'uuid' })
+	public async getUuid(): Promise<si.Systeminformation.UuidData> {
 		return si.uuid();
 	}
-	public getVersions(): Promise<si.Systeminformation.VersionData> {
+	@MessagePattern({ cmd: 'versions' })
+	public async getVersions(): Promise<si.Systeminformation.VersionData> {
 		return si.versions();
 	}
-	public getShell(): Promise<string> {
+	@MessagePattern({ cmd: 'shell' })
+	public async getShell(): Promise<string> {
 		return si.shell();
 	}
-	public getUsers(): Promise<si.Systeminformation.UserData[]> {
+	@MessagePattern({ cmd: 'users' })
+	public async getUsers(): Promise<si.Systeminformation.UserData[]> {
 		return si.users();
 	}
 }
