@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 
 import * as si from 'systeminformation';
 
 @Injectable()
 export class SystemService {
-	public getSystem(): Promise<si.Systeminformation.SystemData> {
+	@MessagePattern({ cmd: 'system' })
+	public async getSystem(): Promise<si.Systeminformation.SystemData> {
 		return si.system();
 	}
-	public getBios(): Promise<si.Systeminformation.BiosData> {
+	@MessagePattern({ cmd: 'bios' })
+	public async getBios(): Promise<si.Systeminformation.BiosData> {
 		return si.bios();
 	}
-	public getBaseboard(): Promise<si.Systeminformation.BaseboardData> {
+	@MessagePattern({ cmd: 'baseboard' })
+	public async getBaseboard(): Promise<si.Systeminformation.BaseboardData> {
 		return si.baseboard();
 	}
-	public getChassis(): Promise<si.Systeminformation.ChassisData> {
+	@MessagePattern({ cmd: 'chassis' })
+	public async getChassis(): Promise<si.Systeminformation.ChassisData> {
 		return si.chassis();
 	}
 }
