@@ -1,6 +1,13 @@
-version: "3"
+version: '3'
 services:
+    amqp:
+        image: rabbitmq:latest
+        ports:
+            - 5672:5672
+        restart: always
     back:
+        depends_on:
+            - amqp
         image: node:latest
         volumes:
             - .:/usr/app
@@ -15,6 +22,8 @@ services:
         depends_on:
             - back
         image: nginx:latest
+        ports:
+            - 80:80
         volumes:
             - ./packages/front/dist:/usr/share/nginx/html
         restart: unless-stopped
