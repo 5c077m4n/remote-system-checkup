@@ -8,11 +8,13 @@ async function bootstrap() {
 		transport: Transport.RMQ,
 		options: {
 			urls: ['amqp://localhost:5672'],
-			queue: 'SENSOR_QUEUE',
+			queue: 'GQL_QUEUE',
 			queueOptions: { durable: false },
 			prefetchCount: 128,
 		},
 	});
-	await app.listen(() => console.log('The sensor service is now listening.'));
+	await app.listen(() => {
+		console.log('The graphql service is now listening.');
+	});
 }
 bootstrap();
