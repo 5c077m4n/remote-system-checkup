@@ -5,6 +5,20 @@ services:
         ports:
             - 5672:5672
         restart: always
+
+    auth:
+        depends_on:
+            - amqp
+        image: node:latest
+        volumes:
+            - ./packages/auth-service:/usr/app
+        command: >
+            sh -c "cd /usr/app &&
+                npm install &&
+                npm run build &&
+                npm run start:prod"
+        restart: always
+
     sensor:
         depends_on:
             - amqp
@@ -16,7 +30,8 @@ services:
                 npm install &&
                 npm run build &&
                 npm run start:prod"
-        restart: unless-stopped
+        restart: always
+
     graphql:
         depends_on:
             - amqp
@@ -29,19 +44,8 @@ services:
                 npm install &&
                 npm run build &&
                 npm run start:prod"
-        restart: unless-stopped
-    auth:
-        depends_on:
-            - amqp
-        image: node:latest
-        volumes:
-            - ./packages/auth-service:/usr/app
-        command: >
-            sh -c "cd /usr/app &&
-                npm install &&
-                npm run build &&
-                npm run start:prod"
-        restart: unless-stopped
+        restart: always
+
     gateway:
         depends_on:
             - amqp
@@ -55,7 +59,8 @@ services:
                 npm install &&
                 npm run build &&
                 npm run start:prod"
-        restart: unless-stopped
+        restart: always
+
     front:
         depends_on:
             - gateway
@@ -65,4 +70,4 @@ services:
             - 443:443
         volumes:
             - ./packages/front/dist:/usr/share/nginx/html
-        restart: unless-stopped
+        restart: always
