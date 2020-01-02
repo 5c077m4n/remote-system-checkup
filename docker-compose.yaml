@@ -2,8 +2,6 @@ version: "3"
 services:
     amqp:
         image: rabbitmq:latest
-        ports:
-            - 5672:5672
         restart: always
 
     auth:
