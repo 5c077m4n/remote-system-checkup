@@ -18,6 +18,6 @@ export class AppController {
 	}
 
 	@UseGuards(AuthGuard)
-	@Post()
-	getSensorData() {}
+	@Post('sense')
+	getSensorData(@Body() body: any) {}
 }
