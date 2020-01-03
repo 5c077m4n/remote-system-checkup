@@ -58,14 +58,13 @@ services:
                 npm run build &&
                 npm run start:prod"
         restart: always
-
-    front:
-        depends_on:
-            - gateway
-        image: nginx:latest
-        ports:
-            - 80:80
-            - 443:443
-        volumes:
-            - ./packages/front/dist:/usr/share/nginx/html
-        restart: always
+    # front:
+    #     depends_on:
+    #         - gateway
+    #     image: nginx:latest
+    #     ports:
+    #         - 80:80
+    #         - 443:443
+    #     volumes:
+    #         - ./packages/front/dist:/usr/share/nginx/html
+    #     restart: always
