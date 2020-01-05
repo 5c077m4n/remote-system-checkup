@@ -25,14 +25,14 @@ export class HealthCheckService implements TerminusOptionsFactory {
 			healthIndicators: [
 				async () =>
 					this.dns.pingCheck('netword_test', 'https://google.com'),
-				async () => this.mem.checkHeap('memory_heap', 128e6),
+				async () => this.mem.checkHeap('memory_heap_test', 128e6),
 				async () =>
-					this.disk.checkStorage('disk_state', {
-						path: process.cwd(),
-						threshold: 512e6,
+					this.disk.checkStorage('disk_state_test', {
+						path: process.cwd() + '/dist',
+						thresholdPercent: 0.5,
 					}),
 				async () =>
-					this.micro.pingCheck('rabbitmq', {
+					this.micro.pingCheck('amqp_test', {
 						transport: Transport.RMQ,
 					}),
 			],
