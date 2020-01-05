@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
 	): boolean | Promise<boolean> | Observable<boolean> {
 		return this.authService.send<boolean>(
 			{ cmd: 'isAuthenticated' },
-			context.getArgByIndex(0).body ?? {},
+			context.switchToHttp().getRequest().body ?? {},
 		);
 	}
 }

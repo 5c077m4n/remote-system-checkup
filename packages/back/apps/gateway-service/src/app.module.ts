@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { TerminusModule } from '@nestjs/terminus';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HealthCheckService } from './services/health-check/health-check.service';
 
 @Module({
 	imports: [
@@ -28,6 +30,9 @@ import { AppService } from './app.service';
 				},
 			},
 		]),
+		TerminusModule.forRootAsync({
+			useClass: HealthCheckService,
+		}),
 	],
 	controllers: [AppController],
 	providers: [AppService],

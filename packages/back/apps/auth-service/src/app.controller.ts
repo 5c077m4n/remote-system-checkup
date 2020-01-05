@@ -8,7 +8,7 @@ export class AppController {
 	constructor(private readonly appService: AppService) {}
 
 	@MessagePattern({ cmd: 'isAuthenticated' })
-	isAuthenticated(): boolean {
-		return this.appService.isUserAllowed();
+	isAuthenticated(reqBody: any): boolean {
+		return this.appService.isUserAllowed(reqBody);
 	}
 }
