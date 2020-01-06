@@ -8,7 +8,7 @@ export class AppController {
 	constructor(private readonly appService: AppService) {}
 
 	@MessagePattern({ cmd: 'isAuthenticated' })
-	public async isAuth(userData: any): Promise<boolean> {
+	public isAuth(userData: any): boolean {
 		return this.appService.isUserAllowed(userData);
 	}
 }
