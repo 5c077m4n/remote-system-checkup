@@ -35,15 +35,6 @@
 				"tsConfigPath": "apps/sensor-service/tsconfig.app.json"
 			}
 		},
-		"health-check-service": {
-			"type": "application",
-			"root": "apps/health-check-service",
-			"entryFile": "main",
-			"sourceRoot": "apps/health-check-service/src",
-			"compilerOptions": {
-				"tsConfigPath": "apps/health-check-service/tsconfig.app.json"
-			}
-		},
 		"auth-service": {
 			"type": "application",
 			"root": "apps/auth-service",
