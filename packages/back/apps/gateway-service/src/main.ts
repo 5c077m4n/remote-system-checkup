@@ -8,6 +8,8 @@ import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
 
+declare const module: any;
+
 async function bootstrap() {
 	const app = await NestFactory.create<NestFastifyApplication>(
 		AppModule,
@@ -23,6 +25,11 @@ async function bootstrap() {
 		},
 	});
 	app.use(helmet());
+
+	if (module.hot) {
+		module.hot.accept();
+		module.hot.dispose(() => app.close());
+	}
 
 	await app.startAllMicroservicesAsync();
 	await app.listen(3000, '0.0.0.0');
