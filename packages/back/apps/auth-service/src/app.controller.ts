@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
-	@MessagePattern({ cmd: 'isAuthenticated' })
+	@MessagePattern({ cmd: 'isAuth' })
 	public isAuth(userData: any): boolean {
 		return this.appService.isUserAllowed(userData);
 	}
