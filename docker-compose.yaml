@@ -1,59 +1,19 @@
-version: "3"
+version: '3'
 services:
     amqp:
         image: rabbitmq:latest
         restart: always
 
-    auth:
+    back:
         depends_on:
             - amqp
         image: node:latest
         volumes:
-            - ./packages/auth-service:/usr/app
+            - ./packages/back:/usr/app
+        ports:
+            - 3000:3000
         command: >
-            sh -c "cd /usr/app &&
-                npm ci &&
-                npm run build &&
-                npm run start:prod"
-        restart: always
-
-    sensor:
-        depends_on:
-            - amqp
-        image: node:latest
-        volumes:
-            - ./packages/sensor-service:/usr/app
-        command: >
-            sh -c "cd /usr/app &&
-                npm ci &&
-                npm run build &&
-                npm run start:prod"
-        restart: always
-
-    graphql:
-        depends_on:
-            - amqp
-            - sensor
-        image: node:latest
-        volumes:
-            - ./packages/gql-service:/usr/app
-        command: >
-            sh -c "cd /usr/app &&
-                npm ci &&
-                npm run build &&
-                npm run start:prod"
-        restart: always
-
-    gateway:
-        depends_on:
-            - amqp
-            - auth
-            - graphql
-        image: node:latest
-        volumes:
-            - ./packages/gateway-service:/usr/app
-        command: >
-            sh -c "cd /usr/app &&
+            sh -c "cd /usr/app/ &&
                 npm ci &&
                 npm run build &&
                 npm run start:prod"
