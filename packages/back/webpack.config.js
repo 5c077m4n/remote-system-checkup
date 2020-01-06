@@ -7,14 +7,15 @@ const nestOptions = require('./nest-cli.json');
 module.exports = function(options) {
 	return {
 		...options,
-		entry:
-			options.entry ||
-			Object.fromEntries(
+		entry: options.entry || {
+			index: 'webpack/hot/poll?100',
+			...Object.fromEntries(
 				Object.entries(nestOptions.projects).map(([key, val]) => [
 					key,
 					path.resolve(val.sourceRoot, val.entryFile) + '.ts',
 				]),
 			),
+		},
 		watch: true,
 		externals: [
 			nodeExternals({
