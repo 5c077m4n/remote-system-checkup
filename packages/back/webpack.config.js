@@ -8,13 +8,17 @@ const WEBPACK_HOT_MODULE = 'webpack/hot/poll?100';
 
 module.exports = function(options) {
 	const isProd = options.mode === 'production';
-	let entry;
-	if (isProd) {
-		entry = options.entry;
-	} else {
+
+	let entry = [...options.entry];
+	if (!isProd) {
 		if (typeof options.entry === 'string') {
-			entry = [WEBPACK_HOT_MODULE, options.entry];
-		} else if (typeof options.entry === 'object') {
+			entry = [WEBPACK_HOT_MODULE, ...options.entry];
+		} else if (
+			Array.isArray(options.entry) &&
+			options.entry[0] !== WEBPACK_HOT_MODULE
+		) {
+			entry = [WEBPACK_HOT_MODULE].concat(options.entry);
+		} else if (!options.entry) {
 			entry = Object.fromEntries(
 				Object.entries(nestOptions.projects).map(([key, val]) => [
 					key,
@@ -26,10 +30,6 @@ module.exports = function(options) {
 					],
 				]),
 			);
-		} else if (Array.isArray(options.entry)) {
-			options.entry.unshift(WEBPACK_HOT_MODULE);
-		} else {
-			entry = options.entry;
 		}
 	}
 	const plugins = isProd
