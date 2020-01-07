@@ -9,29 +9,29 @@ const WEBPACK_HOT_MODULE = 'webpack/hot/poll?100';
 module.exports = function(options) {
 	const isProd = options.mode === 'production';
 
-	let entry = [...options.entry];
+	let entry = options.entry;
 	if (!isProd) {
-		if (typeof options.entry === 'string') {
-			entry = [WEBPACK_HOT_MODULE, ...options.entry];
-		} else if (
-			Array.isArray(options.entry) &&
-			options.entry[0] !== WEBPACK_HOT_MODULE
-		) {
-			entry = [WEBPACK_HOT_MODULE].concat(options.entry);
-		} else if (!options.entry) {
-			entry = Object.fromEntries(
-				Object.entries(nestOptions.projects).map(([key, val]) => [
-					key,
-					[
-						WEBPACK_HOT_MODULE,
-						path
-							.resolve(val.sourceRoot, val.entryFile)
-							.concat('.ts'),
-					],
-				]),
-			);
+		if (typeof entry === 'string') {
+			entry = [WEBPACK_HOT_MODULE, entry];
+		} else if (Array.isArray(entry) && entry[0] !== WEBPACK_HOT_MODULE) {
+			entry = [WEBPACK_HOT_MODULE].concat(entry);
 		}
 	}
+	if (!entry) {
+		entry = Object.fromEntries(
+			Object.entries(nestOptions.projects).map(([key, val]) => {
+				const projPath = path
+					.resolve(val.sourceRoot, val.entryFile)
+					.concat('.ts');
+
+				return [
+					key,
+					isProd ? projPath : [WEBPACK_HOT_MODULE].concat(projPath),
+				];
+			}),
+		);
+	}
+
 	const plugins = isProd
 		? [...options.plugins]
 		: [...options.plugins, new webpack.HotModuleReplacementPlugin()];
