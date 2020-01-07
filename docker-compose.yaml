@@ -1,7 +1,7 @@
-version: '3'
+version: "3"
 services:
     amqp:
-        image: rabbitmq:latest
+        image: rabbitmq:3.7-alpine
         restart: always
 
     back:
@@ -20,8 +20,8 @@ services:
         restart: always
     # front:
     #     depends_on:
-    #         - gateway
-    #     image: nginx:latest
+    #         - back
+    #     image: nginx:stable
     #     ports:
     #         - 80:80
     #         - 443:443

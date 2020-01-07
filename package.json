@@ -4,10 +4,11 @@
 	"scripts": {
 		"postinstall": "lerna bootstrap",
 		"bootstrap": "lerna bootstrap",
-		"build": "lerna run build",
-		"start": "lerna run start",
+		"build:prod": "lerna run build",
+		"start:prod": "lerna run start:prod",
 		"test": "lerna run test",
-		"clean": "lerna run clean"
+		"clean": "lerna run clean",
+		"docker": "sudo docker-compose up --remove-orphans"
 	},
 	"husky": {
 		"hooks": {
