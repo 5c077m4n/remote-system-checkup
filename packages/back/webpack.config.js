@@ -12,7 +12,7 @@ module.exports = function(options) {
 	let entry = [...options.entry];
 	if (!isProd) {
 		if (typeof options.entry === 'string') {
-			entry = [WEBPACK_HOT_MODULE, ...options.entry];
+			entry = [WEBPACK_HOT_MODULE, options.entry];
 		} else if (
 			Array.isArray(options.entry) &&
 			options.entry[0] !== WEBPACK_HOT_MODULE
