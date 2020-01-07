@@ -11,10 +11,32 @@ module.exports = function(options) {
 
 	let entry = options.entry;
 	if (!isProd) {
+<<<<<<< HEAD
 		if (typeof entry === 'string') {
 			entry = [WEBPACK_HOT_MODULE, entry];
 		} else if (Array.isArray(entry) && entry[0] !== WEBPACK_HOT_MODULE) {
 			entry = [WEBPACK_HOT_MODULE].concat(entry);
+=======
+		if (typeof options.entry === 'string') {
+			entry = [WEBPACK_HOT_MODULE, options.entry];
+		} else if (
+			Array.isArray(options.entry) &&
+			options.entry[0] !== WEBPACK_HOT_MODULE
+		) {
+			entry = [WEBPACK_HOT_MODULE].concat(options.entry);
+		} else if (!options.entry) {
+			entry = Object.fromEntries(
+				Object.entries(nestOptions.projects).map(([key, val]) => [
+					key,
+					[
+						WEBPACK_HOT_MODULE,
+						path
+							.resolve(val.sourceRoot, val.entryFile)
+							.concat('.ts'),
+					],
+				]),
+			);
+>>>>>>> 4724c3e69abcfd668f0969d4f0cdd58ea626b81e
 		}
 	}
 	if (!entry) {
