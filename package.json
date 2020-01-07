@@ -8,7 +8,7 @@
 		"start:prod": "lerna run start:prod",
 		"test": "lerna run test",
 		"clean": "lerna run clean",
-		"docker": "sudo docker-compose up --remove-orphans"
+		"docker": "docker-compose up --remove-orphans"
 	},
 	"husky": {
 		"hooks": {
