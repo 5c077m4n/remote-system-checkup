@@ -28,14 +28,16 @@ fn main() -> Result<()> {
 
 	for (i, message) in consumer.receiver().iter().enumerate() {
 		match message {
-			ConsumerMessage::Delivery(delivery) => {
-				if delivery.routing_key == functions::IS_AUTH {
+			ConsumerMessage::Delivery(delivery) => match delivery.routing_key.as_str() {
+				functions::IS_AUTH => {
 					info!("isAuth request detected.");
 				}
-				let body = String::from_utf8_lossy(&delivery.body);
-				info!("({:>3}) Received [{}]", i, body);
-				consumer.ack(delivery)?;
-			}
+				_ => {
+					let body = String::from_utf8_lossy(&delivery.body);
+					info!("({:>3}) Received [{}]", i, body);
+					consumer.ack(delivery)?;
+				}
+			},
 			other => {
 				info!("Consumer ended: {:?}", other);
 				break;
