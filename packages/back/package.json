@@ -11,7 +11,7 @@
 		"prebuild": "rimraf dist",
 		"build": "nest build --webpack",
 		"format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-		"start": "nest start --webpack",
+		"start": "nest start --webpack & run-s rust:run",
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main",

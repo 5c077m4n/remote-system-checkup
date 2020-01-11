@@ -5,7 +5,8 @@
 		"postinstall": "lerna bootstrap",
 		"bootstrap": "lerna bootstrap",
 		"build:prod": "lerna run build",
-		"start:prod": "lerna run start:prod",
+		"start": "lerna run start",
+		"watch": "lerna run watch",
 		"test": "lerna run test",
 		"clean": "lerna run clean",
 		"docker": "docker-compose up --remove-orphans"
@@ -26,6 +27,10 @@
 		],
 		"*.{ts,js}": [
 			"eslint --fix",
+			"git add"
+		],
+		"*.rs": [
+			"cargo fmt",
 			"git add"
 		]
 	},
