@@ -2,14 +2,14 @@
 	"name": "remote-system-checkup",
 	"private": true,
 	"scripts": {
-		"postinstall": "lerna bootstrap",
 		"bootstrap": "lerna bootstrap",
 		"build:prod": "lerna run build",
-		"start": "lerna run start",
-		"watch": "lerna run watch",
-		"test": "lerna run test",
 		"clean": "lerna run clean",
-		"docker": "docker-compose up --remove-orphans"
+		"docker": "docker-compose up --remove-orphans",
+		"postinstall": "lerna bootstrap",
+		"start": "lerna run start",
+		"test": "lerna run test",
+		"watch": "lerna run watch"
 	},
 	"husky": {
 		"hooks": {
@@ -27,10 +27,6 @@
 		],
 		"*.{ts,js}": [
 			"eslint --fix",
-			"git add"
-		],
-		"*.rs": [
-			"cargo fmt",
 			"git add"
 		]
 	},

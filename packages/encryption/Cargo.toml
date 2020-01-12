@@ -1,5 +1,5 @@
 [package]
-name = "remote-system-checkup-auth"
+name = "remote-system-checkup-encrypt"
 version = "0.1.0"
 authors = ["Roee Shapira <roy.shap1@gmail.com>"]
 edition = "2018"

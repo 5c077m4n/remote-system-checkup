@@ -2,32 +2,50 @@
 	"name": "remote-system-checkup-back",
 	"version": "0.0.1",
 	"description": "",
-	"author": "",
 	"license": "MIT",
+	"author": "",
 	"scripts": {
-		"rust:run": "(cd ../encryption && cargo run)",
-		"rust:watch": "(cd ../encryption && cargo watch -x run)",
-		"rust:debug": "(cd ../encryption && cargo watch -x clippy)",
 		"prebuild": "rimraf dist",
 		"build": "nest build --webpack",
+		"clean": "rimraf ./node_modules",
 		"format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-		"start": "nest start --webpack & run-s rust:run",
-		"start:dev": "nest start --watch",
-		"start:debug": "nest start --debug --watch",
-		"start:prod": "node dist/main",
-		"watch:gateway": "npm run start -- gateway-service",
-		"watch:auth": "npm run start -- auth-service",
-		"watch:sensor": "npm run start -- sensor-service",
-		"watch:gql": "npm run start -- gql-service",
-		"watch:encrypt": "npm run rust:watch",
-		"watch": "run-p watch:*",
 		"lint": "tslint -p tsconfig.json -c tslint.json",
+		"rust:debug": "(cd ../encryption && cargo watch -x clippy)",
+		"rust:run": "(cd ../encryption && cargo run)",
+		"rust:watch": "(cd ../encryption && cargo watch -x run)",
+		"start": "nest start --webpack",
+		"start:all": "run-p start rust:run",
+		"start:debug": "nest start --debug --watch",
+		"start:dev": "nest start --watch",
+		"start:prod": "node dist/main",
 		"test": "jest",
-		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./apps/gateway-service/test/jest-e2e.json",
-		"clean": "rimraf ./node_modules"
+		"test:watch": "jest --watch",
+		"watch": "run-p watch:*",
+		"watch:auth": "npm run start -- auth-service",
+		"watch:encrypt": "npm run rust:watch",
+		"watch:gateway": "npm run start -- gateway-service",
+		"watch:gql": "npm run start -- gql-service",
+		"watch:sensor": "npm run start -- sensor-service"
+	},
+	"jest": {
+		"coverageDirectory": "./coverage",
+		"moduleFileExtensions": [
+			"js",
+			"json",
+			"ts"
+		],
+		"rootDir": ".",
+		"roots": [
+			"<rootDir>/apps/"
+		],
+		"testEnvironment": "node",
+		"testRegex": ".spec.ts$",
+		"transform": {
+			"^.+\\.(t|j)s$": "ts-jest"
+		}
 	},
 	"dependencies": {
 		"@godaddy/terminus": "^4.3.1",
@@ -68,22 +86,5 @@
 		"tsconfig-paths": "^3.9.0",
 		"tslint": "^5.20.0",
 		"typescript": "^3.6.3"
-	},
-	"jest": {
-		"moduleFileExtensions": [
-			"js",
-			"json",
-			"ts"
-		],
-		"rootDir": ".",
-		"testRegex": ".spec.ts$",
-		"transform": {
-			"^.+\\.(t|j)s$": "ts-jest"
-		},
-		"coverageDirectory": "./coverage",
-		"testEnvironment": "node",
-		"roots": [
-			"<rootDir>/apps/"
-		]
 	}
 }

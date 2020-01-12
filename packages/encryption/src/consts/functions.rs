@@ -1,1 +1,1 @@
-pub const IS_AUTH: &str = "isAuth";
+pub const ENCRYPT: &str = "ENCRYPT";

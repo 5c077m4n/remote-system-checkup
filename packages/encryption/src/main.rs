@@ -22,14 +22,14 @@ fn main() -> Result<()> {
 	let mut connection = Connection::insecure_open("amqp://guest:guest@localhost:5672")?;
 	let channel = connection.open_channel(None)?;
 	let _exchange = Exchange::direct(&channel);
-	let queue = channel.queue_declare(queues::AUTH_QUEUE, QueueDeclareOptions::default())?;
+	let queue = channel.queue_declare(queues::ENCRYPTION_QUEUE, QueueDeclareOptions::default())?;
 	let consumer = queue.consume(ConsumerOptions::default())?;
-	info!("The auth service is now listening.");
+	info!("The encryption service is now listening.");
 
 	for (i, message) in consumer.receiver().iter().enumerate() {
 		match message {
 			ConsumerMessage::Delivery(delivery) => match delivery.routing_key.as_str() {
-				functions::IS_AUTH => {
+				functions::ENCRYPT => {
 					info!("isAuth request detected.");
 				}
 				_ => {

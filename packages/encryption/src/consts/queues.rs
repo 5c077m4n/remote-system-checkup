@@ -1,1 +1,1 @@
-pub const AUTH_QUEUE: &str = "ENCRYPTION_QUEUE";
+pub const ENCRYPTION_QUEUE: &str = "ENCRYPTION_QUEUE";
