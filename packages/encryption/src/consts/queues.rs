@@ -1,1 +1,0 @@
-pub const ENCRYPTION_QUEUE: &str = "ENCRYPTION_QUEUE";

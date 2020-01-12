@@ -3,9 +3,10 @@ extern crate log;
 extern crate env_logger;
 
 mod consts;
+mod structs;
 
 use amiquip::{
-	Connection, ConsumerMessage, ConsumerOptions, Exchange, QueueDeclareOptions, Result,
+	Connection, ConsumerMessage, ConsumerOptions, Exchange, Publish, QueueDeclareOptions, Result,
 };
 use consts::{functions, queues};
 use env_logger::Env;
@@ -21,7 +22,7 @@ fn main() -> Result<()> {
 	init_logger();
 	let mut connection = Connection::insecure_open("amqp://guest:guest@localhost:5672")?;
 	let channel = connection.open_channel(None)?;
-	let _exchange = Exchange::direct(&channel);
+	let exchange = Exchange::direct(&channel);
 	let queue = channel.queue_declare(queues::ENCRYPTION_QUEUE, QueueDeclareOptions::default())?;
 	let consumer = queue.consume(ConsumerOptions::default())?;
 	info!("The encryption service is now listening.");
@@ -30,11 +31,21 @@ fn main() -> Result<()> {
 		match message {
 			ConsumerMessage::Delivery(delivery) => match delivery.routing_key.as_str() {
 				functions::ENCRYPT => {
-					info!("isAuth request detected.");
+					info!("{} request detected.", functions::ENCRYPT);
+					exchange.publish(Publish::new(
+						b"functions::ENCRYPT",
+						queues::ENCRYPTION_QUEUE,
+					))?;
+				}
+				functions::JWT => {
+					info!("{} request detected.", functions::JWT);
+					exchange.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
 				}
 				_ => {
 					let body = String::from_utf8_lossy(&delivery.body);
-					info!("({:>3}) Received [{}]", i, body);
+					let json: structs::Any =
+						serde_json::from_str(&body).expect("Error parsing incoming json.");
+					info!("({:>3}) Received [{}]", i, json);
 					consumer.ack(delivery)?;
 				}
 			},
