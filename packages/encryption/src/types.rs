@@ -3,6 +3,6 @@ pub enum Any {
 	Bool(bool),
 	Number(Number),
 	String(String),
-	Array(Vec<Value>),
-	Object(Map<String, Value>),
+	Array(Vec<Any>),
+	Object(Map<String, Any>),
 }

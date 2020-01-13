@@ -3,13 +3,14 @@ extern crate log;
 extern crate env_logger;
 
 mod consts;
-mod structs;
+mod types;
 
 use amiquip::{
 	Connection, ConsumerMessage, ConsumerOptions, Exchange, Publish, QueueDeclareOptions, Result,
 };
 use consts::{functions, queues};
 use env_logger::Env;
+use serde_json::Value;
 
 fn init_logger() {
 	let env = Env::default()
@@ -43,9 +44,9 @@ fn main() -> Result<()> {
 				}
 				_ => {
 					let body = String::from_utf8_lossy(&delivery.body);
-					let json: structs::Any =
+					let json: Value =
 						serde_json::from_str(&body).expect("Error parsing incoming json.");
-					info!("({:>3}) Received [{}]", i, json);
+					info!("({:>3}) Received [{:?}]", i, json);
 					consumer.ack(delivery)?;
 				}
 			},
