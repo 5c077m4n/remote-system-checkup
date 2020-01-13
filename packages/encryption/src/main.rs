@@ -1,16 +1,16 @@
 #[macro_use]
 extern crate log;
 extern crate env_logger;
+extern crate serde_json;
 
 mod consts;
-mod types;
 
 use amiquip::{
 	Connection, ConsumerMessage, ConsumerOptions, Exchange, Publish, QueueDeclareOptions, Result,
 };
 use consts::{functions, queues};
 use env_logger::Env;
-use serde_json::Value;
+use serde_json::{Value, to_string};
 
 fn init_logger() {
 	let env = Env::default()
@@ -30,26 +30,35 @@ fn main() -> Result<()> {
 
 	for (i, message) in consumer.receiver().iter().enumerate() {
 		match message {
-			ConsumerMessage::Delivery(delivery) => match delivery.routing_key.as_str() {
-				functions::ENCRYPT => {
-					info!("{} request detected.", functions::ENCRYPT);
-					exchange.publish(Publish::new(
-						b"functions::ENCRYPT",
-						queues::ENCRYPTION_QUEUE,
-					))?;
+			ConsumerMessage::Delivery(delivery) => {
+				let body = String::from_utf8_lossy(&delivery.body);
+				let json: Value =
+					serde_json::from_str(&body).expect("Error parsing incoming json.");
+				info!(
+					"[{}] ({:>3}) Received [{:?}]",
+					delivery.routing_key, i, json["pattern"]["cmd"]
+				);
+				let fn_name = to_string(&json["pattern"]["cmd"])
+					.expect("Error in parsing the received json.");
+
+				match fn_name.as_str() {
+					functions::ENCRYPT => {
+						info!("{} request detected.", functions::ENCRYPT);
+						exchange.publish(Publish::new(
+							b"functions::ENCRYPT",
+							queues::ENCRYPTION_QUEUE,
+						))?;
+					}
+					functions::JWT => {
+						info!("{} request detected.", functions::JWT);
+						exchange
+							.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
+					}
+					_ => ()
 				}
-				functions::JWT => {
-					info!("{} request detected.", functions::JWT);
-					exchange.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
-				}
-				_ => {
-					let body = String::from_utf8_lossy(&delivery.body);
-					let json: Value =
-						serde_json::from_str(&body).expect("Error parsing incoming json.");
-					info!("({:>3}) Received [{:?}]", i, json);
-					consumer.ack(delivery)?;
-				}
-			},
+
+				consumer.ack(delivery)?;
+			}
 			other => {
 				info!("Consumer ended: {:?}", other);
 				break;
