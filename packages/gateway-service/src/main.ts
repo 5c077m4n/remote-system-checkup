@@ -4,7 +4,7 @@ import {
 	FastifyAdapter,
 	NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import * as helmet from 'helmet';
+import * as helmet from 'fastify-helmet';
 
 import { AppModule } from './app.module';
 
@@ -15,6 +15,7 @@ async function bootstrap() {
 		AppModule,
 		new FastifyAdapter({ logger: true }),
 	);
+	app.register(helmet);
 	app.connectMicroservice({
 		transport: Transport.RMQ,
 		options: {
@@ -24,7 +25,6 @@ async function bootstrap() {
 			prefetchCount: 128,
 		},
 	});
-	app.use(helmet());
 
 	if (module.hot) {
 		module.hot.accept();
