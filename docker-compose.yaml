@@ -4,27 +4,48 @@ services:
         image: rabbitmq:3.7-alpine
         restart: always
 
-    back:
+    auth:
         depends_on:
             - amqp
         image: node:latest
         volumes:
-            - ./packages/back:/usr/app
-        ports:
-            - 3000:3000
-        command: >
-            sh -c "cd /usr/app/ &&
-                npm ci &&
-                npm run build &&
-                npm run start:prod"
+            - ./packages/auth-service:/usr/app
+        command: sh -c "cd /usr/app/ && npm ci && npm run start"
+        restart: always
+
+    encryption:
+        depends_on:
+            - amqp
+        image: rust:latest
+        volumes:
+            - ./packages/encryption-service:/usr/app
+        command: sh -c "cd /usr/app/ && cargo run"
+        restart: always
+
+    sensor:
+        depends_on:
+            - amqp
+        image: node:latest
+        volumes:
+            - ./packages/sensor-service:/usr/app
+        command: sh -c "cd /usr/app/ && npm ci && npm run start"
+        restart: always
+
+    gateway:
+        depends_on:
+            - amqp
+        image: node:latest
+        volumes:
+            - ./packages/gateway-service:/usr/app
+        command: sh -c "cd /usr/app/ && npm ci && npm run start"
         restart: always
     # front:
-    #     depends_on:
-    #         - back
-    #     image: nginx:stable
-    #     ports:
-    #         - 80:80
-    #         - 443:443
-    #     volumes:
-    #         - ./packages/front/dist:/usr/share/nginx/html
-    #     restart: always
+    # 	depends_on:
+    # 		- gateway
+    # 	image: nginx:stable
+    # 	ports:
+    # 		- 80:80
+    # 		- 443:443
+    # 	volumes:
+    # 		- ./packages/front/dist:/usr/share/nginx/html
+    # 	restart: always
