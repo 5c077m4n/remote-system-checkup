@@ -4,7 +4,7 @@
 	"scripts": {
 		"clean": "lerna run clean && rimraf node_modules",
 		"docker": "docker-compose up --remove-orphans",
-		"postinstall": "lerna bootstrap --hoist",
+		"postinstall": "lerna bootstrap",
 		"start": "lerna run start",
 		"test": "lerna run test",
 		"watch": "lerna run watch"
@@ -35,7 +35,7 @@
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.9.0",
 		"eslint-plugin-prettier": "^3.1.2",
-		"husky": "^3.1.0",
+		"husky": "^4.0.9",
 		"lerna": "^3.20.2",
 		"lint-staged": "^9.5.0",
 		"prettier": "^1.19.1",
