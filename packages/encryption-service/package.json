@@ -4,6 +4,7 @@
 		"build": "cargo build",
 		"clean": "cargo clean",
 		"start": "cargo run",
+		"test": "cargo test",
 		"watch": "cargo watch -x run"
 	}
 }
