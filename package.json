@@ -6,7 +6,7 @@
 		"docker": "docker-compose up --remove-orphans",
 		"postinstall": "lerna bootstrap",
 		"start": "lerna run start --parallel",
-		"test": "lerna run test",
+		"test": "lerna run test --stream",
 		"watch": "lerna run watch --parallel"
 	},
 	"husky": {
