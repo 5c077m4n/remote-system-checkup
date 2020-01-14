@@ -5,9 +5,9 @@
 		"clean": "lerna run clean && rimraf node_modules",
 		"docker": "docker-compose up --remove-orphans",
 		"postinstall": "lerna bootstrap",
-		"start": "lerna run start",
+		"start": "lerna run start --parallel",
 		"test": "lerna run test",
-		"watch": "lerna run watch"
+		"watch": "lerna run watch --parallel"
 	},
 	"husky": {
 		"hooks": {
