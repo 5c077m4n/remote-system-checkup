@@ -2,11 +2,9 @@
 	"name": "remote-system-checkup",
 	"private": true,
 	"scripts": {
-		"bootstrap": "lerna bootstrap",
-		"build:prod": "lerna run build",
-		"clean": "lerna run clean",
+		"clean": "lerna run clean && rimraf node_modules",
 		"docker": "docker-compose up --remove-orphans",
-		"postinstall": "lerna bootstrap",
+		"postinstall": "lerna bootstrap --hoist",
 		"start": "lerna run start",
 		"test": "lerna run test",
 		"watch": "lerna run watch"

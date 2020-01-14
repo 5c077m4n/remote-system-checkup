@@ -1,0 +1,8 @@
+{
+	"name": "encryption-service",
+	"scripts": {
+		"clean": "cargo clean",
+		"start": "cargo run",
+		"watch": "cargo watch -x run"
+	}
+}
