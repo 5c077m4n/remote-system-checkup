@@ -71,10 +71,12 @@ async fn run() -> Result<()> {
 							.publish(Publish::new(hash.as_bytes(), queues::ENCRYPTION_QUEUE))?;
 					}
 					functions::BCRYPT_VERIFY => {
-						exchange
-							.publish(Publish::new(b"functions::BCRYPT_VERIFY", queues::ENCRYPTION_QUEUE))?;
+						exchange.publish(Publish::new(
+							b"functions::BCRYPT_VERIFY",
+							queues::ENCRYPTION_QUEUE,
+						))?;
 					}
-					_ => ()
+					_ => (),
 				}
 
 				consumer.ack(delivery)?;
@@ -88,6 +90,6 @@ async fn run() -> Result<()> {
 	connection.close()
 }
 
-fn main() -> Result<()> {
-	block_on(run())
+fn main() {
+	block_on(run());
 }
