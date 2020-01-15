@@ -1,3 +1,4 @@
+extern crate bcrypt;
 #[macro_use]
 extern crate log;
 extern crate env_logger;
@@ -10,7 +11,7 @@ use amiquip::{
 };
 use consts::{functions, queues};
 use env_logger::Env;
-use serde_json::{Value, to_string};
+use futures::executor::block_on;
 
 fn init_logger() {
 	let env = Env::default()
@@ -19,7 +20,17 @@ fn init_logger() {
 	env_logger::init_from_env(env);
 }
 
-fn main() -> Result<()> {
+async fn hash(text: &str) -> String {
+	let content: &[u8] = text.as_bytes();
+	bcrypt::hash(content, bcrypt::DEFAULT_COST + 2)
+		.expect("There was an error in hashing the string.")
+}
+
+async fn verify(text: &str) -> bool {
+	true
+}
+
+async fn run() -> Result<()> {
 	init_logger();
 	let mut connection = Connection::insecure_open("amqp://guest:guest@localhost:5672")?;
 	let channel = connection.open_channel(None)?;
@@ -32,27 +43,36 @@ fn main() -> Result<()> {
 		match message {
 			ConsumerMessage::Delivery(delivery) => {
 				let body = String::from_utf8_lossy(&delivery.body);
-				let json: Value =
+				let json: serde_json::Value =
 					serde_json::from_str(&body).expect("Error parsing incoming json.");
 				info!(
 					"[{}] ({:>3}) Received [{:?}]",
-					delivery.routing_key, i, json["pattern"]["cmd"]
+					delivery.routing_key, i, json
 				);
-				let fn_name = to_string(&json["pattern"]["cmd"])
+				let fn_name = serde_json::to_string(&json["pattern"]["cmd"])
 					.expect("Error in parsing the received json.");
 
 				match fn_name.as_str() {
 					functions::ENCRYPT => {
-						info!("{} request detected.", functions::ENCRYPT);
 						exchange.publish(Publish::new(
 							b"functions::ENCRYPT",
 							queues::ENCRYPTION_QUEUE,
 						))?;
 					}
 					functions::JWT => {
-						info!("{} request detected.", functions::JWT);
 						exchange
 							.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
+					}
+					functions::BCRYPT_HASH => {
+						let content = serde_json::to_string(&json["pattern"]["content"])
+							.expect("Error in parsing the received json.");
+						let hash = hash(&content).await;
+						exchange
+							.publish(Publish::new(hash.as_bytes(), queues::ENCRYPTION_QUEUE))?;
+					}
+					functions::BCRYPT_VERIFY => {
+						exchange
+							.publish(Publish::new(b"functions::BCRYPT_VERIFY", queues::ENCRYPTION_QUEUE))?;
 					}
 					_ => ()
 				}
@@ -65,6 +85,9 @@ fn main() -> Result<()> {
 			}
 		}
 	}
-
 	connection.close()
+}
+
+fn main() -> Result<()> {
+	block_on(run())
 }

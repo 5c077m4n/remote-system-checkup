@@ -4,11 +4,12 @@ import { ClientProxy } from '@nestjs/microservices';
 @Injectable()
 export class AppService implements OnModuleInit {
 	constructor(
-		@Inject('ENCRYPTION_SERVICE') private readonly encService: ClientProxy,
+		@Inject('ENCRYPTION_SERVICE')
+		private readonly encryptService: ClientProxy,
 	) {}
 	async onModuleInit() {
-		return await this.encService
-			.send<boolean>({ cmd: 'JWT' }, [])
+		return await this.encryptService
+			.send<boolean>({ cmd: 'JWT' }, [1, 2, 3])
 			.toPromise();
 	}
 
