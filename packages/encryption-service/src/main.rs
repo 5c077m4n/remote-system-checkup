@@ -52,12 +52,6 @@ async fn run() -> Result<()> {
 				);
 
 				match rmq_request.cmd.as_str() {
-					functions::ENCRYPT => {
-						exchange.publish(Publish::new(
-							b"functions::ENCRYPT",
-							queues::ENCRYPTION_QUEUE,
-						))?;
-					}
 					functions::JWT => {
 						exchange
 							.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
@@ -78,7 +72,6 @@ async fn run() -> Result<()> {
 						warn!("Unknow function called: {}", unknown_fn);
 					}
 				}
-
 				consumer.ack(delivery)?;
 			}
 			other => {
