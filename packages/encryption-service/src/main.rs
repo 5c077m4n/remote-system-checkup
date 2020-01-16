@@ -44,7 +44,7 @@ async fn run() -> Result<()> {
 		match message {
 			ConsumerMessage::Delivery(delivery) => {
 				let body = String::from_utf8_lossy(&delivery.body);
-				let rmq_request: types::CMD =
+				let rmq_request: types::AMQPMessage =
 					serde_json::from_str(&body).expect("Error in parsing the received json.");
 				info!(
 					"[{}] ({:>3}) Received [{:?}]",
