@@ -5,6 +5,7 @@ extern crate env_logger;
 extern crate serde_json;
 
 mod consts;
+mod types;
 
 use amiquip::{
 	Connection, ConsumerMessage, ConsumerOptions, Exchange, Publish, QueueDeclareOptions, Result,
@@ -43,16 +44,14 @@ async fn run() -> Result<()> {
 		match message {
 			ConsumerMessage::Delivery(delivery) => {
 				let body = String::from_utf8_lossy(&delivery.body);
-				let json: serde_json::Value =
-					serde_json::from_str(&body).expect("Error parsing incoming json.");
+				let rmq_request: types::CMD =
+					serde_json::from_str(&body).expect("Error in parsing the received json.");
 				info!(
 					"[{}] ({:>3}) Received [{:?}]",
-					delivery.routing_key, i, json
+					delivery.routing_key, i, rmq_request
 				);
-				let fn_name = serde_json::to_string(&json["pattern"]["cmd"])
-					.expect("Error in parsing the received json.");
 
-				match fn_name.as_str() {
+				match rmq_request.cmd.as_str() {
 					functions::ENCRYPT => {
 						exchange.publish(Publish::new(
 							b"functions::ENCRYPT",
@@ -64,19 +63,20 @@ async fn run() -> Result<()> {
 							.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
 					}
 					functions::BCRYPT_HASH => {
-						let content = serde_json::to_string(&json["pattern"]["content"])
-							.expect("Error in parsing the received json.");
-						let hash = hash(&content).await;
+						let hash: String = hash(&rmq_request.pattern).await;
 						exchange
 							.publish(Publish::new(hash.as_bytes(), queues::ENCRYPTION_QUEUE))?;
 					}
 					functions::BCRYPT_VERIFY => {
+						let is_valid: bool = verify(&rmq_request.pattern).await;
 						exchange.publish(Publish::new(
-							b"functions::BCRYPT_VERIFY",
+							if is_valid { b"true" } else { b"false" },
 							queues::ENCRYPTION_QUEUE,
 						))?;
 					}
-					_ => (),
+					unknown_fn => {
+						warn!("Unknow function called: {}", unknown_fn);
+					}
 				}
 
 				consumer.ack(delivery)?;
@@ -90,6 +90,6 @@ async fn run() -> Result<()> {
 	connection.close()
 }
 
-fn main() {
-	block_on(run());
+fn main() -> Result<()> {
+	block_on(run())
 }

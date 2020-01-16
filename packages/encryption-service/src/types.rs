@@ -1,8 +1,8 @@
-pub enum Any {
-    Null,
-    Bool(bool),
-    Number(Number),
-    String(String),
-    Array(Vec<Any>),
-    Object(Map<String, Any>),
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CMD {
+	pub cmd: String,
+	pub pattern: Value,
 }
