@@ -27,7 +27,7 @@ async fn hash(text: &str) -> String {
 		.expect("There was an error in hashing the string.")
 }
 
-async fn verify(text: &str) -> bool {
+async fn verify(_text: &str) -> bool {
 	true
 }
 
@@ -44,29 +44,38 @@ async fn run() -> Result<()> {
 		match message {
 			ConsumerMessage::Delivery(delivery) => {
 				let body = String::from_utf8_lossy(&delivery.body);
+				trace!("{}", body);
 				let rmq_request: types::AMQPMessage =
-					serde_json::from_str(&body).expect("Error in parsing the received json.");
+					serde_json::from_str(&body).expect("Error in parsing the received json");
 				info!(
 					"[{}] ({:>3}) Received [{:?}]",
-					delivery.routing_key, i, rmq_request
+					delivery.routing_key, i, rmq_request.pattern
 				);
 
-				match rmq_request.cmd.as_str() {
+				match rmq_request.pattern.cmd.as_str() {
 					functions::JWT => {
 						exchange
 							.publish(Publish::new(b"functions::JWT", queues::ENCRYPTION_QUEUE))?;
 					}
 					functions::BCRYPT_HASH => {
-						let hash: String = hash(&rmq_request.pattern).await;
-						exchange
-							.publish(Publish::new(hash.as_bytes(), queues::ENCRYPTION_QUEUE))?;
+						if let Some(pass) = rmq_request.data.as_str() {
+							let hash: String = hash(&pass).await;
+							exchange
+								.publish(Publish::new(hash.as_bytes(), queues::ENCRYPTION_QUEUE))?;
+						} else {
+							warn!("Bad data received.")
+						}
 					}
 					functions::BCRYPT_VERIFY => {
-						let is_valid: bool = verify(&rmq_request.pattern).await;
-						exchange.publish(Publish::new(
-							if is_valid { b"true" } else { b"false" },
-							queues::ENCRYPTION_QUEUE,
-						))?;
+						if let Some(pass) = rmq_request.data.as_str() {
+							let is_valid: bool = verify(&pass).await;
+							exchange.publish(Publish::new(
+								if is_valid { b"true" } else { b"false" },
+								queues::ENCRYPTION_QUEUE,
+							))?;
+						} else {
+							warn!("Bad data received.");
+						}
 					}
 					unknown_fn => {
 						warn!("Unknow function called: {}", unknown_fn);
