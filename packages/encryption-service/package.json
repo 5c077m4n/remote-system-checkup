@@ -3,6 +3,7 @@
 	"scripts": {
 		"build": "cargo build",
 		"clean": "cargo clean",
+		"install": "cargo build",
 		"start": "cargo run",
 		"test": "cargo test",
 		"watch": "cargo watch -x run"

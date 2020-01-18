@@ -19,8 +19,8 @@ async function bootstrap() {
 	app.connectMicroservice({
 		transport: Transport.RMQ,
 		options: {
-			urls: ['amqp://localhost:5672'],
-			queue: 'GATEWAY_QUEUE',
+			urls: [process.env.RMQ_URL],
+			queue: process.env.GATEWAY_QUEUE,
 			queueOptions: { durable: false },
 			prefetchCount: 128,
 		},
@@ -32,6 +32,6 @@ async function bootstrap() {
 	}
 
 	await app.startAllMicroservicesAsync();
-	await app.listen(3000, '0.0.0.0');
+	await app.listen(+process.env.PORT, process.env.HOST);
 }
 bootstrap();

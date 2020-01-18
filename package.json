@@ -4,7 +4,7 @@
 	"scripts": {
 		"clean": "lerna run clean && rimraf node_modules",
 		"docker": "sudo docker-compose up",
-		"postinstall": "lerna bootstrap & (cd packages/encryption-service && cargo build)",
+		"postinstall": "lerna bootstrap",
 		"start": "lerna run start --parallel",
 		"test": "lerna run test --stream",
 		"watch": "lerna run watch --parallel",
