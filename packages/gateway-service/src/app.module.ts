@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TerminusModule } from '@nestjs/terminus';
 
@@ -8,13 +9,16 @@ import { HealthCheckService } from './services/health-check/health-check.service
 
 @Module({
 	imports: [
+		ConfigModule.forRoot({
+			envFilePath: '../../.dev.env',
+		}),
 		ClientsModule.register([
 			{
-				name: 'GQL_SERVICE',
+				name: process.env.GQL_SERVICE,
 				transport: Transport.RMQ,
 				options: {
-					urls: ['amqp://localhost:5672'],
-					queue: 'GQL_QUEUE',
+					urls: [process.env.RMQ_URI],
+					queue: process.env.GQL_QUEUE,
 					queueOptions: { durable: false },
 					prefetchCount: 128,
 				},

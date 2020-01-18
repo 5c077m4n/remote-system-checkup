@@ -7,10 +7,11 @@ export class AppService implements OnModuleInit {
 		@Inject('ENCRYPTION_SERVICE')
 		private readonly encryptService: ClientProxy,
 	) {}
-	async onModuleInit() {
-		return await this.encryptService
-			.send<boolean>({ cmd: 'JWT' }, [1, 2, 3])
-			.toPromise();
+	onModuleInit() {
+		this.encryptService.send(
+			{ cmd: 'BCRYPT_VERIFY' },
+			'is_this_the_correct_password?',
+		);
 	}
 
 	public isUserAllowed(data: any): boolean {

@@ -44,12 +44,12 @@ async fn run() -> Result<()> {
 		match message {
 			ConsumerMessage::Delivery(delivery) => {
 				let body = String::from_utf8_lossy(&delivery.body);
-				trace!("{}", body);
-				let rmq_request: types::AMQPMessage =
-					serde_json::from_str(&body).expect("Error in parsing the received json");
+				info!("Message: {}", body);
+				let rmq_request: types::AMQPMessage = serde_json::from_str(&body)
+					.expect("Error in parsing the received AMPQ message");
 				info!(
 					"[{}] ({:>3}) Received [{:?}]",
-					delivery.routing_key, i, rmq_request.pattern
+					delivery.routing_key, i, rmq_request
 				);
 
 				match rmq_request.pattern.cmd.as_str() {
@@ -63,7 +63,7 @@ async fn run() -> Result<()> {
 							exchange
 								.publish(Publish::new(hash.as_bytes(), queues::ENCRYPTION_QUEUE))?;
 						} else {
-							warn!("Bad data received.")
+							error!("Bad data received.")
 						}
 					}
 					functions::BCRYPT_VERIFY => {
@@ -74,7 +74,7 @@ async fn run() -> Result<()> {
 								queues::ENCRYPTION_QUEUE,
 							))?;
 						} else {
-							warn!("Bad data received.");
+							error!("Bad data received.");
 						}
 					}
 					unknown_fn => {

@@ -7,7 +7,8 @@
 		"postinstall": "lerna bootstrap & (cd packages/encryption-service && cargo build)",
 		"start": "lerna run start --parallel",
 		"test": "lerna run test --stream",
-		"watch": "lerna run watch --parallel"
+		"watch": "lerna run watch --parallel",
+		"update": "lerna run update"
 	},
 	"husky": {
 		"hooks": {
