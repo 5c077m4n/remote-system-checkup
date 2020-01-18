@@ -24,11 +24,11 @@ import { HealthCheckService } from './services/health-check/health-check.service
 				},
 			},
 			{
-				name: 'AUTH_SERVICE',
+				name: process.env.AUTH_SERVICE,
 				transport: Transport.RMQ,
 				options: {
-					urls: ['amqp://localhost:5672'],
-					queue: 'AUTH_QUEUE',
+					urls: [process.env.RMQ_URI],
+					queue: process.env.AUTH_QUEUE,
 					queueOptions: { durable: false },
 					prefetchCount: 128,
 				},

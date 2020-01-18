@@ -9,8 +9,8 @@ async function bootstrap() {
 	const app = await NestFactory.createMicroservice(AppModule, {
 		transport: Transport.RMQ,
 		options: {
-			urls: ['amqp://localhost:5672'],
-			queue: 'GQL_QUEUE',
+			urls: [process.env.RMQ_URI],
+			queue: process.env.GQL_QUEUE,
 			queueOptions: { durable: false },
 			prefetchCount: 128,
 		},
