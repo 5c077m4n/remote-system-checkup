@@ -3,15 +3,14 @@ syntax = "proto3";
 package auth;
 
 service AuthService {
-	rpc Hash (Password) returns (HashedPassword) {}
-	rpc Verify (Password) returns (IsValid) {}
+	rpc Verify (User) returns (IsValid) {}
 }
 
-message Password {
-	string content = 1;
-}
-message HashedPassword {
-	string content = 1;
+message User {
+	string username = 1;
+	string password = 2;
+	string email = 3;
+	string secret = 4;
 }
 message IsValid {
 	bool content = 1;

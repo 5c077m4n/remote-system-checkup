@@ -21,7 +21,7 @@ export class HealthCheckService implements TerminusOptionsFactory {
 
 	createTerminusOptions(): TerminusModuleOptions {
 		const healthEndpoint: TerminusEndpoint = {
-			url: '/health-check',
+			url: '/health',
 			healthIndicators: [
 				async () =>
 					this.dns.pingCheck('netword_test', 'https://google.com'),
@@ -36,6 +36,8 @@ export class HealthCheckService implements TerminusOptionsFactory {
 						transport: Transport.RMQ,
 						options: {
 							urls: ['amqp://localhost:5672'],
+							queueOptions: { durable: false },
+							prefetchCount: 128,
 						},
 					}),
 			],
