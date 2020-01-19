@@ -19,7 +19,7 @@ async function bootstrap() {
 	app.connectMicroservice({
 		transport: Transport.RMQ,
 		options: {
-			urls: [process.env.RMQ_URL],
+			urls: [process.env.RMQ_URI],
 			queue: process.env.GATEWAY_QUEUE,
 			queueOptions: { durable: false },
 			prefetchCount: 128,

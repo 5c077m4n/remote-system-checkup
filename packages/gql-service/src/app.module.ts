@@ -13,7 +13,7 @@ import { AppService } from './app.service';
 		}),
 		ClientsModule.register([
 			{
-				name: process.env.SENSEOR_SERVICE,
+				name: process.env.SENSOR_SERVICE,
 				transport: Transport.RMQ,
 				options: {
 					urls: [process.env.RMQ_URI],
