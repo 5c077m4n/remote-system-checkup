@@ -4,7 +4,7 @@ package auth;
 
 service AuthService {
 	rpc Hash (Password) returns (HashedPassword) {}
-	rpc verify (Password) returns (IsValid) {}
+	rpc Verify (Password) returns (IsValid) {}
 }
 
 message Password {
