@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+	rpc Hash (Password) returns (HashedPassword) {}
+	rpc verify (Password) returns (IsValid) {}
+}
+
+message Password {
+	string content = 1;
+}
+message HashedPassword {
+	string content = 1;
+}
+message IsValid {
+	bool content = 1;
+}

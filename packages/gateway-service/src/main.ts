@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import {
@@ -23,6 +24,13 @@ async function bootstrap() {
 			queue: process.env.GATEWAY_QUEUE,
 			queueOptions: { durable: false },
 			prefetchCount: 128,
+		},
+	});
+	app.connectMicroservice({
+		transport: Transport.GRPC,
+		options: {
+			package: 'auth',
+			protoPath: join(__dirname, '../src/services/grpc/auth.proto'),
 		},
 	});
 

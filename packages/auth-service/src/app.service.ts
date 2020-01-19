@@ -8,10 +8,9 @@ export class AppService implements OnModuleInit {
 		private readonly encryptService: ClientProxy,
 	) {}
 	onModuleInit() {
-		this.encryptService.send(
-			{ cmd: 'BCRYPT_VERIFY' },
-			'is_this_the_correct_password?',
-		);
+		this.encryptService
+			.send({ cmd: 'BCRYPT_VERIFY' }, 'is_this_the_correct_password?')
+			.subscribe();
 	}
 
 	public isUserAllowed(data: any): boolean {
