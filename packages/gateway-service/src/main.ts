@@ -26,13 +26,6 @@ async function bootstrap() {
 			prefetchCount: 128,
 		},
 	});
-	app.connectMicroservice({
-		transport: Transport.GRPC,
-		options: {
-			package: 'auth',
-			protoPath: join(__dirname, '../src/services/grpc/auth.proto'),
-		},
-	});
 
 	if (module.hot) {
 		module.hot.accept();
