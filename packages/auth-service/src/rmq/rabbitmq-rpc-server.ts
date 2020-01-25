@@ -17,14 +17,14 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 		await this.channel.consume(this.queue, this.handleMessage.bind(this));
 	}
 
-	private async handleMessage(msg) {
+	private async handleMessage(msg: amqp.Message) {
 		const messageObj = JSON.parse(msg.content.toString());
 
 		const handlers = this.getHandlers();
 		const pattern = JSON.stringify(messageObj.pattern);
-		if (!this.messageHandlers.has(pattern)) return;
+		if (!handlers.has(pattern)) return;
 
-		const handler = this.messageHandlers[pattern];
+		const handler = handlers.get(pattern);
 		const response$ = this.transformToObservable(
 			await handler(msg),
 		) as Observable<any>;

@@ -1,19 +1,17 @@
-import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
-export class AppService implements OnModuleInit {
+export class AppService {
 	constructor(
 		@Inject('ENCRYPTION_SERVICE')
 		private readonly encryptService: ClientProxy,
 	) {}
-	onModuleInit() {
+
+	public isUserAllowed(data: any): boolean {
 		this.encryptService
 			.send({ cmd: 'BCRYPT_VERIFY' }, 'is_this_the_correct_password?')
 			.subscribe();
-	}
-
-	public isUserAllowed(data: any): boolean {
 		return data.username && data.password;
 	}
 }
