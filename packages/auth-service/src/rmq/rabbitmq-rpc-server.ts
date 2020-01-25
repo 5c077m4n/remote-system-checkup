@@ -9,30 +9,39 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 	private async init() {
 		this.server = await amqp.connect(this.host);
 		this.channel = await this.server.createChannel();
-		this.channel.prefetch(1);
-		this.channel.assertQueue(this.queue, { durable: false });
+		process.once('SIGINT', this.channel.close);
+		await this.channel.assertQueue(this.queue, {
+			durable: false,
+		});
+		await this.channel.prefetch(1);
+		await this.channel.consume(this.queue, this.handleMessage.bind(this));
 	}
 
-	private async handleMessage(message) {
-		const { content } = message;
-		const messageObj = JSON.parse(content.toString());
+	private async handleMessage(msg) {
+		const messageObj = JSON.parse(msg.content.toString());
 
 		const handlers = this.getHandlers();
 		const pattern = JSON.stringify(messageObj.pattern);
-		if (!this.messageHandlers[pattern]) return;
+		if (!this.messageHandlers.has(pattern)) return;
 
 		const handler = this.messageHandlers[pattern];
 		const response$ = this.transformToObservable(
-			await handler(messageObj.data),
+			await handler(msg),
 		) as Observable<any>;
-		response$ && this.send(response$, data => this.sendMessage(data));
+		if (response$) {
+			this.send(response$, data =>
+				this.sendMessage(data as amqp.Message),
+			);
+		}
 	}
 
-	private sendMessage(msg) {
+	private sendMessage(msg: amqp.Message) {
 		const buffer = Buffer.from(JSON.stringify(msg));
-		this.channel.sendToQueue(this.queue, buffer, {
+		this.channel.sendToQueue(msg.properties.replyTo, buffer, {
+			replyTo: msg.properties.replyTo,
 			correlationId: msg.properties.correlationId,
 		});
+		this.channel.ack(msg);
 	}
 
 	constructor(private readonly host: string, private readonly queue: string) {
@@ -41,13 +50,11 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 
 	public async listen(callback: () => void) {
 		await this.init();
-		this.channel.consume(this.queue, this.handleMessage.bind(this), {
-			noAck: true,
-		});
+		if (typeof callback === 'function') callback();
 	}
 
 	public close() {
-		this.channel && this.channel.close();
-		this.server && this.server.close();
+		if (this.channel) this.channel.close();
+		if (this.server) this.server.close();
 	}
 }
