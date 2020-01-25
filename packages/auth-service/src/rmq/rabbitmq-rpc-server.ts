@@ -6,22 +6,11 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 	private server: amqp.Connection = null;
 	private channel: amqp.Channel = null;
 
-	constructor(private readonly host: string, private readonly queue: string) {
-		super();
-	}
-
-	public async listen(callback: () => void) {
-		await this.init();
-		this.channel.consume(
-			`${this.queue}_sub`,
-			this.handleMessage.bind(this),
-			{ noAck: true },
-		);
-	}
-
-	public close() {
-		this.channel && this.channel.close();
-		this.server && this.server.close();
+	private async init() {
+		this.server = await amqp.connect(this.host);
+		this.channel = await this.server.createChannel();
+		this.channel.prefetch(1);
+		this.channel.assertQueue(this.queue, { durable: false });
 	}
 
 	private async handleMessage(message) {
@@ -30,9 +19,7 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 
 		const handlers = this.getHandlers();
 		const pattern = JSON.stringify(messageObj.pattern);
-		if (!this.messageHandlers[pattern]) {
-			return;
-		}
+		if (!this.messageHandlers[pattern]) return;
 
 		const handler = this.messageHandlers[pattern];
 		const response$ = this.transformToObservable(
@@ -41,15 +28,26 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 		response$ && this.send(response$, data => this.sendMessage(data));
 	}
 
-	private sendMessage(message) {
-		const buffer = Buffer.from(JSON.stringify(message));
-		this.channel.sendToQueue(`${this.queue}_pub`, buffer);
+	private sendMessage(msg) {
+		const buffer = Buffer.from(JSON.stringify(msg));
+		this.channel.sendToQueue(this.queue, buffer, {
+			correlationId: msg.properties.correlationId,
+		});
 	}
 
-	private async init() {
-		this.server = await amqp.connect(this.host);
-		this.channel = await this.server.createChannel();
-		this.channel.assertQueue(`${this.queue}_sub`, { durable: false });
-		this.channel.assertQueue(`${this.queue}_pub`, { durable: false });
+	constructor(private readonly host: string, private readonly queue: string) {
+		super();
+	}
+
+	public async listen(callback: () => void) {
+		await this.init();
+		this.channel.consume(this.queue, this.handleMessage.bind(this), {
+			noAck: true,
+		});
+	}
+
+	public close() {
+		this.channel && this.channel.close();
+		this.server && this.server.close();
 	}
 }

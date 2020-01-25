@@ -2,18 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
+import { RMQRPCServer } from './rmq/rabbitmq-rpc-server';
 
 declare const module: any;
 
 async function bootstrap() {
 	const app = await NestFactory.createMicroservice(AppModule, {
-		transport: Transport.RMQ,
-		options: {
-			urls: [process.env.RMQ_URI],
-			queue: process.env.AUTH_QUEUE,
-			queueOptions: { durable: false },
-			prefetchCount: 128,
-		},
+		strategy: new RMQRPCServer(process.env.RMQ_URI, process.env.AUTH_QUEUE),
 	});
 
 	if (module.hot) {
