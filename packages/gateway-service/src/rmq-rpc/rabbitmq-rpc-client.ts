@@ -45,5 +45,5 @@ export class RMQRPCClient extends ClientProxy {
 	}
 
 	connect(): Promise<any> {}
-	close() {}
+	close(): void {}
 }

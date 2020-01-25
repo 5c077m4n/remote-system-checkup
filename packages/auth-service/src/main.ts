@@ -1,8 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
-import { RMQRPCServer } from './rmq/rabbitmq-rpc-server';
+import { RMQRPCServer } from './rmq-rpc/rabbitmq-rpc-server';
 
 declare const module: any;
 
