@@ -24,10 +24,14 @@ export class RMQRPCClient extends ClientProxy {
 	protected publish(
 		packet: ReadPacket<any>,
 		callback: (packet: WritePacket<any>) => void,
-	): Function {}
+	): Function {
+		return function() {};
+	}
 	protected async dispatchEvent<T = any>(
 		packet: ReadPacket<any>,
-	): Promise<T> {}
+	): Promise<T> {
+		return;
+	}
 
 	protected async sendSingleMessage(
 		messageObj,
@@ -47,8 +51,14 @@ export class RMQRPCClient extends ClientProxy {
 		);
 	}
 
-	connect(): Promise<any> {
-		return amqp.connect(this.host);
+	async connect(): Promise<any> {
+		this.server = await amqp.connect(this.host);
+		this.channel = await this.server.createChannel();
+		await this.channel.assertQueue(this.queue, {
+			durable: false,
+		});
+		await this.channel.prefetch(1);
+		await this.channel.consume(this.queue, this.handleMessage.bind(this));
 	}
 	close(): void {
 		if (this.channel) this.channel.close();

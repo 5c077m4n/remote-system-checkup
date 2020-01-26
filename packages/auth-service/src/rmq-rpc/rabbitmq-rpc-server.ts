@@ -6,7 +6,7 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 	private server: amqp.Connection = null;
 	private channel: amqp.Channel = null;
 
-	private async init() {
+	private async init(): Promise<void> {
 		this.server = await amqp.connect(this.host);
 		this.channel = await this.server.createChannel();
 		process.once('SIGINT', this.channel.close);
@@ -17,7 +17,7 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 		await this.channel.consume(this.queue, this.handleMessage.bind(this));
 	}
 
-	private async handleMessage(msg: amqp.Message) {
+	private async handleMessage(msg: amqp.Message): Promise<void> {
 		const messageObj = JSON.parse(msg.content.toString());
 
 		const handlers = this.getHandlers();
@@ -35,7 +35,7 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 		}
 	}
 
-	private sendMessage(msg: amqp.Message) {
+	private sendMessage(msg: amqp.Message): void {
 		const buffer = Buffer.from(JSON.stringify(msg));
 		this.channel.sendToQueue(msg.properties.replyTo, buffer, {
 			replyTo: msg.properties.replyTo,
@@ -48,12 +48,12 @@ export class RMQRPCServer extends Server implements CustomTransportStrategy {
 		super();
 	}
 
-	public async listen(callback: () => void) {
+	public async listen(callback: () => void): Promise<void> {
 		await this.init();
 		if (typeof callback === 'function') callback();
 	}
 
-	public close() {
+	public close(): void {
 		if (this.channel) this.channel.close();
 		if (this.server) this.server.close();
 	}
