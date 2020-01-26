@@ -35,9 +35,8 @@ export class HealthCheckService implements TerminusOptionsFactory {
 					this.micro.pingCheck('amqp_test', {
 						transport: Transport.RMQ,
 						options: {
-							urls: ['amqp://localhost:5672'],
+							urls: [process.env.RMQ_URI],
 							queueOptions: { durable: false },
-							prefetchCount: 128,
 						},
 					}),
 			],

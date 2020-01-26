@@ -18,7 +18,6 @@ import { AppService } from './app.service';
 					urls: [process.env.RMQ_URI],
 					queue: process.env.ENCRYPTION_QUEUE,
 					queueOptions: { durable: false },
-					prefetchCount: 128,
 				},
 			},
 		]),

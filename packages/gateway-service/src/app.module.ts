@@ -20,7 +20,6 @@ import { HealthCheckService } from './services/health-check/health-check.service
 					urls: [process.env.RMQ_URI],
 					queue: process.env.GQL_QUEUE,
 					queueOptions: { durable: false },
-					prefetchCount: 128,
 				},
 			},
 			{
@@ -30,7 +29,6 @@ import { HealthCheckService } from './services/health-check/health-check.service
 					urls: [process.env.RMQ_URI],
 					queue: process.env.AUTH_QUEUE,
 					queueOptions: { durable: false },
-					prefetchCount: 128,
 				},
 			},
 		]),

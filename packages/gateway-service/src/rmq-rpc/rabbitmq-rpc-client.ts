@@ -2,6 +2,9 @@ import * as amqp from 'amqplib';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 
 export class RMQRPCClient extends ClientProxy {
+	private server: amqp.Connection = null;
+	private channel: amqp.Channel = null;
+
 	private handleMessage(
 		message,
 		server,
@@ -44,6 +47,11 @@ export class RMQRPCClient extends ClientProxy {
 		);
 	}
 
-	connect(): Promise<any> {}
-	close(): void {}
+	connect(): Promise<any> {
+		return amqp.connect(this.host);
+	}
+	close(): void {
+		if (this.channel) this.channel.close();
+		if (this.server) this.server.close();
+	}
 }

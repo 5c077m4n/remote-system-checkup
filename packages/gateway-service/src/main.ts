@@ -23,7 +23,6 @@ async function bootstrap() {
 			urls: [process.env.RMQ_URI],
 			queue: process.env.GATEWAY_QUEUE,
 			queueOptions: { durable: false },
-			prefetchCount: 128,
 		},
 	});
 

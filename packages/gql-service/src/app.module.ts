@@ -19,7 +19,6 @@ import { AppService } from './app.service';
 					urls: [process.env.RMQ_URI],
 					queue: process.env.SENSOR_QUEUE,
 					queueOptions: { durable: false },
-					prefetchCount: 128,
 				},
 			},
 		]),
